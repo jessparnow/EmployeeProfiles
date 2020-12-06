@@ -9,10 +9,86 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-
+const teamMembers = [];
+  
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
+async function generateTeam() {
+  const userInput = await inquirer.prompt([
+
+    {
+      type: "input",
+      name: "name",
+      message: "Name: ",
+    },
+    {
+      type: "input",
+      name: "id",
+      message: "ID:",
+    },
+    {
+      type: "input",
+      name: "email",
+      message: "Email: ",
+    },
+    {
+        type: "list",
+        name: "role",
+        message: "What is you role?",
+        choices: ["Manager", "Engineer", "Intern"],
+      },
+  
+  ])
+  switch (userInput.role) {
+    case "Manager":
+       const officeNumberPrompt = await inquirer.prompt([    {
+            type: "input",
+            name: "officenumber",
+            message: "OfficeNumber: ",
+          },
+        ])
+        return officeNumberPrompt.officenumber;
+
+    case "Engineer":
+      const githubPrompt = await inquirer.prompt([
+        {
+          type: "input",
+          name: "github",
+          message: "Github Link: ",
+        },
+      ])
+      return githubPrompt.github;
+    case "Intern":
+      const schoolPrompt = await inquirer.prompt([
+        {
+          type: "input",
+          name: "school",
+          message: "School Name: ",
+        },
+      ])
+      return schoolPrompt.school;
+  }
+};
+generateTeam();
+
+// teamMembers.push(new Manager(name, id, email));
+// have to call the HTML Render file
+
+// generateContent = () => `${userInput.name}`;
+
+// const pumpOutHTML = async () => {
+//     try {
+//         const answers = await generateTeam();
+//         const teamContent = gereateContent(answers);
+//         await fs.writeFile(outputPath, teamContent);
+//         console.log('you write the dang file nice work');
+//     } catch (err){
+//         console.log(err);
+//     }
+// };
+// pumpOutHTML();
+
 
 // After the user has input all employees desired, call the `render` function (required
 // above) and pass in an array containing all employee objects; the `render` function will
