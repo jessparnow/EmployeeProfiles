@@ -9,13 +9,16 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 
 const render = require("./lib/htmlRenderer");
-const teamMembers = [];
+const employees = [];
   
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
-async function generateTeam() {
-  const userInput = await inquirer.prompt([
+function init(){
+    generateTeam();
+}
+function generateTeam() {
+  const userInput = inquirer.prompt([
 
     {
       type: "input",
@@ -38,40 +41,95 @@ async function generateTeam() {
         message: "What is you role?",
         choices: ["Manager", "Engineer", "Intern"],
       },
-  
-  ])
-  switch (userInput.role) {
-    case "Manager":
-       const officeNumberPrompt = await inquirer.prompt([    {
-            type: "input",
-            name: "officenumber",
-            message: "OfficeNumber: ",
+    ])
+    .then(function ({ name, role, id, email }) {
+        let roleAnswer = "";
+        if (role === "Engineer") {
+          roleAnswer = "GitHub username";
+        } else if (role === "Intern") {
+          roleAnswer = "school name";
+        } else {
+          roleAnswer = "office phone number";
+        } 
+        inquirer
+        .prompt([
+          {
+            message: `Enter team member's ${roleAnswer}`,
+            name: "roleAnswer",
+          },
+          {
+            type: "list",
+            message: "Would you like to add more team members?",
+            choices: ["yes", "no"],
+            name: "addMembers",
           },
         ])
-        return officeNumberPrompt.officenumber;
+        .then(function({ roleAnswer, addMembers }){
+            let teammates;
+            if(role === "Engineer"){
+                teamMember = new Engineer(name, id, email, roleAnswer);
+            } else if (role === "Intern") {
+                teamMember = new Intern(name, id, email, roleAnswer);
+              } else {
+                teamMember = new Manager(name, id, email, roleAnswer);
+              }
+              employees.push(teamMember);
+              //.then(function () {
+              if (addMembers === "yes") {
+                generateTeam();
+              } else {
+                  console.log(employees)
+                fs.writeFile(outputPath, render(employees), (err) => {
+                    if (err) {
+                        throw err;
+                    };
+                })
+            
+            }
+        })
+    })
+    
+}
+init();
+//   switch (userInput.role) {
+//     case "Manager":
+//        const officeNumberPrompt = await inquirer.prompt([    {
+//             type: "input",
+//             name: "officenumber",
+//             message: "OfficeNumber: ",
+//           },
+//         ])
+//         return officeNumberPrompt.officenumber;
+//         let managerInfo = new Manager(userInput.name, userInput.id, userInput.email, userInput.officenumber)
+//         return managerInfo;
 
-    case "Engineer":
-      const githubPrompt = await inquirer.prompt([
-        {
-          type: "input",
-          name: "github",
-          message: "Github Link: ",
-        },
-      ])
-      return githubPrompt.github;
-    case "Intern":
-      const schoolPrompt = await inquirer.prompt([
-        {
-          type: "input",
-          name: "school",
-          message: "School Name: ",
-        },
-      ])
-      return schoolPrompt.school;
-  }
-};
-generateTeam();
+//     case "Engineer":
+//       const githubPrompt = await inquirer.prompt([
+//         {
+//           type: "input",
+//           name: "github",
+//           message: "Github Link: ",
+//         },
+//       ])
+//       return githubPrompt.github;
+//     case "Intern":
+//       const schoolPrompt = await inquirer.prompt([
+//         {
+//           type: "input",
+//           name: "school",
+//           message: "School Name: ",
+//         },
+//       ])
+//       return schoolPrompt.school;
+//   }
 
+// async function testy() {
+//     const team =[];
+//     let newTeamMember = await userPrompts();
+//     team.push(newTeamMember);
+//     console.log(team);
+// }
+// testy();
 // teamMembers.push(new Manager(name, id, email));
 // have to call the HTML Render file
 
