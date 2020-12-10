@@ -14,66 +14,64 @@ const employees = [];
 
 // Write code to use inquirer to gather information about the development team members,
 // and to create objects for each team member (using the correct classes as blueprints!)
-function init(){
-    generateTeam();
-}
+
 function generateTeam() {
-  const userInput = inquirer.prompt([
+   inquirer.prompt([
 
     {
       type: "input",
       name: "name",
-      message: "Name: ",
+      message: "Team Member Name: ",
     },
     {
       type: "input",
       name: "id",
-      message: "ID:",
+      message: "What is their ID:",
     },
     {
       type: "input",
       name: "email",
-      message: "Email: ",
+      message: "Add an Email: ",
     },
     {
         type: "list",
         name: "role",
-        message: "What is you role?",
+        message: "Who are you adding to your team?",
         choices: ["Manager", "Engineer", "Intern"],
       },
     ])
     .then(function ({ name, role, id, email }) {
-        let roleAnswer = "";
+        let teamMemberInput = "";
         if (role === "Engineer") {
-          roleAnswer = "GitHub username";
+          teamMemberInput = "Enter a GitHub username";
         } else if (role === "Intern") {
-          roleAnswer = "school name";
+          teamMemberInput = "Enter a School name";
         } else {
-          roleAnswer = "office phone number";
+          teamMemberInput = "Enter your Office phone number";
         } 
         inquirer
         .prompt([
           {
-            message: `Enter team member's ${roleAnswer}`,
-            name: "roleAnswer",
+            name: "teamMemberInput",
+            message: `Role of Team Member ${teamMemberInput}`,
           },
           {
             type: "list",
-            message: "Would you like to add more team members?",
-            choices: ["yes", "no"],
             name: "addMembers",
+            message: "Are there more members of your team?",
+            choices: ["yes", "no"],
           },
         ])
-        .then(function({ roleAnswer, addMembers }){
+        .then(function({ teamMemberInput, addMembers }){
             let teammates;
-            if(role === "Engineer"){
-                teamMember = new Engineer(name, id, email, roleAnswer);
-            } else if (role === "Intern") {
-                teamMember = new Intern(name, id, email, roleAnswer);
+            if(role === "Intern"){
+                teammates = new Intern(name, id, email, teamMemberInput);
+            } else if (role === "Engineer") {
+                teammates = new Engineer(name, id, email, teamMemberInput);
               } else {
-                teamMember = new Manager(name, id, email, roleAnswer);
+                teammates = new Manager(name, id, email, teamMemberInput);
               }
-              employees.push(teamMember);
+              employees.push(teammates);
               //.then(function () {
               if (addMembers === "yes") {
                 generateTeam();
@@ -89,63 +87,8 @@ function generateTeam() {
         })
     })
     
-}
-init();
-//   switch (userInput.role) {
-//     case "Manager":
-//        const officeNumberPrompt = await inquirer.prompt([    {
-//             type: "input",
-//             name: "officenumber",
-//             message: "OfficeNumber: ",
-//           },
-//         ])
-//         return officeNumberPrompt.officenumber;
-//         let managerInfo = new Manager(userInput.name, userInput.id, userInput.email, userInput.officenumber)
-//         return managerInfo;
-
-//     case "Engineer":
-//       const githubPrompt = await inquirer.prompt([
-//         {
-//           type: "input",
-//           name: "github",
-//           message: "Github Link: ",
-//         },
-//       ])
-//       return githubPrompt.github;
-//     case "Intern":
-//       const schoolPrompt = await inquirer.prompt([
-//         {
-//           type: "input",
-//           name: "school",
-//           message: "School Name: ",
-//         },
-//       ])
-//       return schoolPrompt.school;
-//   }
-
-// async function testy() {
-//     const team =[];
-//     let newTeamMember = await userPrompts();
-//     team.push(newTeamMember);
-//     console.log(team);
-// }
-// testy();
-// teamMembers.push(new Manager(name, id, email));
-// have to call the HTML Render file
-
-// generateContent = () => `${userInput.name}`;
-
-// const pumpOutHTML = async () => {
-//     try {
-//         const answers = await generateTeam();
-//         const teamContent = gereateContent(answers);
-//         await fs.writeFile(outputPath, teamContent);
-//         console.log('you write the dang file nice work');
-//     } catch (err){
-//         console.log(err);
-//     }
-// };
-// pumpOutHTML();
+};
+generateTeam();
 
 
 // After the user has input all employees desired, call the `render` function (required

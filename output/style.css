@@ -1,0 +1,15 @@
+body {
+    background-color: darkgrey;
+}
+.team-heading, .card-header {
+    background-image: linear-gradient(to top left, darkcyan, turquoise);
+    color: black;
+    
+}
+.employee-card {
+    padding: 10px;
+}
+
+a {
+    color: darkcyan;
+}
